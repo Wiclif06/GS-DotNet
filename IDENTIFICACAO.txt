@@ -1,0 +1,10 @@
+GLOBAL SOLUTION 2026/2 - CITIZENTECH
+Disciplina: Advanced Business Development with .NET
+Projeto: AgroConecta
+
+Felipe Wiclif Leal da Silva - RM563901
+Deryk de Souza Queiroz - RM563412
+Lucas Gonçalves Viana - RM563254
+Vinicius Paschoeto da Silva - RM563089
+
+Repositório: https://github.com/Wiclif06/GS-DotNet

@@ -1,0 +1,55 @@
+@baseUrl = http://localhost:5080
+@token = COLE_O_TOKEN_DO_LOGIN
+@farmId = 1
+@cropId = 1
+
+### Cadastro: não permite escolher ADMIN
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{"name":"Produtor de demonstração","email":"produtor@example.com","password":"Senha-apenas-de-demonstracao!"}
+
+### Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{"email":"produtor@example.com","password":"Senha-apenas-de-demonstracao!"}
+
+### Fazendas
+GET {{baseUrl}}/api/farms
+Authorization: Bearer {{token}}
+
+### Criar fazenda: repita a mesma chave somente para repetir a mesma ação
+POST {{baseUrl}}/api/farms
+Authorization: Bearer {{token}}
+Idempotency-Key: demo-farm-001
+Content-Type: application/json
+
+{"name":"Fazenda Esperança","ownerName":"Cooperativa","city":"Itu","state":"SP","totalArea":20}
+
+### Talhão: substitua farmId pelo ID retornado acima
+POST {{baseUrl}}/api/crop-areas
+Authorization: Bearer {{token}}
+Idempotency-Key: demo-crop-001
+Content-Type: application/json
+
+{"name":"Talhão A","cropType":"Milho","areaSize":4,"latitude":-23.26,"longitude":-47.30,"farmId":{{farmId}}}
+
+### Observação SIMULADA: substitua cropId pelo ID retornado
+POST {{baseUrl}}/api/satellite-data
+Authorization: Bearer {{token}}
+Idempotency-Key: demo-satellite-001
+Content-Type: application/json
+
+{"cropAreaId":{{cropId}},"source":"SIMULATED","ndviAverage":0.2,"ndviMin":0.1,"ndviMax":0.3,"surfaceTemperature":40,"cloudCoverage":10,"fireFocusNearby":true,"fireFocusDistanceKm":2,"captureDate":"2026-11-01"}
+
+### Alertas
+GET {{baseUrl}}/api/climate-alerts
+Authorization: Bearer {{token}}
+
+### Dashboard
+GET {{baseUrl}}/api/dashboard
+Authorization: Bearer {{token}}
+
+### Banco e processo
+GET {{baseUrl}}/health/ready

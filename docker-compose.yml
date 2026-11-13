@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-agroconecta}
+      POSTGRES_USER: ${POSTGRES_USER:-agroconecta}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Execute scripts/initialize-environment.ps1}
+    volumes:
+      - agroconecta_dotnet_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+  api:
+    build:
+      context: ./src/AgroConecta.Api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-agroconecta};Username=${POSTGRES_USER:-agroconecta};Password=${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}
+      Jwt__Key: ${JWT_KEY:?Configure JWT_KEY}
+      Seed__AdminEmail: ${ADMIN_EMAIL:?Configure ADMIN_EMAIL}
+      Seed__AdminPassword: ${ADMIN_PASSWORD:?Configure ADMIN_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  agroconecta_dotnet_data:

@@ -1,0 +1,21 @@
+Execute os comandos na raiz do projeto.
+
+Local SQLite:
+./scripts/run-local.ps1
+Swagger: http://localhost:5080/swagger
+
+Docker/PostgreSQL:
+./scripts/initialize-environment.ps1
+docker compose up -d --build
+Swagger: http://localhost:8080/swagger
+
+Build e testes:
+dotnet restore AgroConecta.sln
+dotnet build AgroConecta.sln --no-restore
+dotnet test AgroConecta.sln --no-build
+
+Migrations existentes (PostgreSQL):
+dotnet tool restore
+dotnet ef migrations script --idempotent --project src/AgroConecta.Api
+
+Nao gere outro InitialCreate: as migrations ja estao incluidas.
